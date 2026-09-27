@@ -7,9 +7,7 @@
 <title>Mango Painter</title>
 
 <style>
-* {
-  box-sizing: border-box;
-}
+* { box-sizing: border-box; }
 
 body {
   margin: 0;
@@ -79,7 +77,9 @@ header p {
   box-shadow: 0 0 0 4px #ffb347;
 }
 
-.tools {
+.tools,
+.baseModes,
+.actionButtons {
   display: flex;
   flex-wrap: wrap;
   gap: 7px;
@@ -112,12 +112,22 @@ input[type="color"] {
   height: 38px;
   border: none;
   background: none;
+  cursor: pointer;
 }
 
-.actionButtons {
+select {
+  width: 100%;
+  padding: 9px;
+  border-radius: 9px;
+  border: 1px solid #e3c59a;
+  background: white;
+}
+
+.colorRow {
   display: flex;
-  flex-wrap: wrap;
-  gap: 8px;
+  align-items: center;
+  gap: 10px;
+  margin-top: 9px;
 }
 
 .canvasBox {
@@ -146,23 +156,19 @@ canvas {
   color: #725c42;
 }
 
-@media (max-width: 800px) {
+.hidden {
+  display: none;
+}
 
-  header h1 {
-    font-size: 34px;
-  }
+@media (max-width: 800px) {
+  header h1 { font-size: 34px; }
 
   .app {
     grid-template-columns: 1fr;
   }
 
-  .controls {
-    order: 2;
-  }
-
-  .canvasBox {
-    order: 1;
-  }
+  .controls { order: 2; }
+  .canvasBox { order: 1; }
 }
 </style>
 </head>
@@ -179,13 +185,13 @@ canvas {
 <div class="controls">
 
   <div class="controlGroup">
-    <h3>Colours</h3>
+    <h3>Painting Colours</h3>
 
     <div id="palette" class="palette"></div>
 
-    <div style="margin-top:10px;">
-      Custom:
-      <input id="colorPicker" type="color" value="#ff4f93">
+    <div class="colorRow">
+      <span>Custom:</span>
+      <input id="colorPicker" type="color" value="#ff4057">
     </div>
   </div>
 
@@ -194,41 +200,18 @@ canvas {
     <h3>Tools</h3>
 
     <div class="tools">
-
-      <button class="tool active" data-tool="brush">
-        Brush
-      </button>
-
-      <button class="tool" data-tool="dots">
-        Dots
-      </button>
-
-      <button class="tool" data-tool="stripe">
-        Stripe
-      </button>
-
-      <button class="tool" data-tool="heart">
-        Heart
-      </button>
-
-      <button class="tool" data-tool="flower">
-        Flower
-      </button>
-
-      <button class="tool" data-tool="eraser">
-        Eraser
-      </button>
-
+      <button class="tool active" data-tool="brush">Brush</button>
+      <button class="tool" data-tool="dots">Dots</button>
+      <button class="tool" data-tool="stripe">Stripe</button>
+      <button class="tool" data-tool="heart">Heart</button>
+      <button class="tool" data-tool="flower">Flower</button>
+      <button class="tool" data-tool="eraser">Eraser</button>
     </div>
   </div>
 
 
   <div class="controlGroup">
-
-    <h3>
-      Brush size:
-      <span id="sizeLabel">9</span>
-    </h3>
+    <h3>Brush size: <span id="sizeLabel">9</span></h3>
 
     <input
       id="size"
@@ -237,19 +220,86 @@ canvas {
       max="35"
       value="9"
     >
-
   </div>
 
 
   <div class="controlGroup">
 
-    <h3>Mango colour</h3>
+    <h3>Mango Base</h3>
 
-    <input
-      id="baseColor"
-      type="color"
-      value="#ffc928"
-    >
+    <div class="baseModes">
+      <button class="baseMode active" data-mode="solid">
+        Solid
+      </button>
+
+      <button class="baseMode" data-mode="gradient">
+        Gradient
+      </button>
+
+      <button class="baseMode" data-mode="tropical">
+        Tropical Mango
+      </button>
+    </div>
+
+
+    <div id="solidControls">
+      <div class="colorRow">
+        <span>Colour:</span>
+        <input
+          id="solidColor"
+          type="color"
+          value="#ffc928"
+        >
+      </div>
+    </div>
+
+
+    <div id="gradientControls" class="hidden">
+
+      <div class="colorRow">
+        <span>Colour 1:</span>
+        <input
+          id="gradientColor1"
+          type="color"
+          value="#f7e342"
+        >
+      </div>
+
+      <div class="colorRow">
+        <span>Colour 2:</span>
+        <input
+          id="gradientColor2"
+          type="color"
+          value="#ef642f"
+        >
+      </div>
+
+      <div style="margin-top:10px;">
+        <label for="gradientDirection">
+          Direction
+        </label>
+
+        <select id="gradientDirection">
+          <option value="horizontal">
+            Left → Right
+          </option>
+
+          <option value="vertical">
+            Top → Bottom
+          </option>
+
+          <option value="diagonal">
+            Diagonal
+          </option>
+        </select>
+      </div>
+
+    </div>
+
+
+    <div id="tropicalInfo" class="hidden tip" style="margin-top:10px;">
+      Tropical Mango blends green, yellow, golden orange and ripe red automatically.
+    </div>
 
   </div>
 
@@ -259,804 +309,851 @@ canvas {
     <h3>Actions</h3>
 
     <div class="actionButtons">
-
-      <button id="clearArt">
-        Clear
-      </button>
-
-      <button id="fillMango">
-        Fill Mango
-      </button>
-
-      <button id="surprise">
-        Surprise Me
-      </button>
-
-      <button id="download">
-        Download
-      </button>
-
+      <button id="clearArt">Clear</button>
+      <button id="fillMango">Fill Mango</button>
+      <button id="surprise">Surprise Me</button>
+      <button id="download">Download</button>
     </div>
 
   </div>
 
+
   <div class="tip">
     Paint directly on the mango using your mouse or finger.
-    All painting stays inside the mango.
+    Your artwork stays inside the mango.
   </div>
 
 </div>
 
 
 <div class="canvasBox">
-
-<div class="canvasWrap">
-
-<canvas
-  id="canvas"
-  width="760"
-  height="620">
-</canvas>
-
-</div>
-
+  <div class="canvasWrap">
+    <canvas
+      id="canvas"
+      width="760"
+      height="620">
+    </canvas>
+  </div>
 </div>
 
 </div>
 
 
 <script>
-
 (function () {
 
-const canvas =
-  document.getElementById("canvas");
+  const canvas = document.getElementById("canvas");
+  const ctx = canvas.getContext("2d");
 
-const ctx =
-  canvas.getContext("2d");
+  /*
+     Separate transparent artwork layer.
+     This allows us to change the mango skin
+     without deleting the user's painting.
+  */
 
+  const artCanvas = document.createElement("canvas");
+  artCanvas.width = canvas.width;
+  artCanvas.height = canvas.height;
 
-const artCanvas =
-  document.createElement("canvas");
+  const art = artCanvas.getContext("2d");
 
-artCanvas.width =
-  canvas.width;
+  const paletteEl = document.getElementById("palette");
+  const colorPicker = document.getElementById("colorPicker");
 
-artCanvas.height =
-  canvas.height;
+  const sizeInput = document.getElementById("size");
+  const sizeLabel = document.getElementById("sizeLabel");
 
-const art =
-  artCanvas.getContext("2d");
+  const solidColor = document.getElementById("solidColor");
 
+  const gradientColor1 =
+    document.getElementById("gradientColor1");
 
-const paletteEl =
-  document.getElementById("palette");
+  const gradientColor2 =
+    document.getElementById("gradientColor2");
 
-const colorPicker =
-  document.getElementById("colorPicker");
+  const gradientDirection =
+    document.getElementById("gradientDirection");
 
-const sizeInput =
-  document.getElementById("size");
+  const solidControls =
+    document.getElementById("solidControls");
 
-const sizeLabel =
-  document.getElementById("sizeLabel");
+  const gradientControls =
+    document.getElementById("gradientControls");
 
-const baseColor =
-  document.getElementById("baseColor");
+  const tropicalInfo =
+    document.getElementById("tropicalInfo");
 
+  const W = canvas.width;
+  const H = canvas.height;
 
-const W =
-  canvas.width;
+  const palette = [
+    "#ff4057",
+    "#ff812b",
+    "#ffd52e",
+    "#74d34c",
+    "#35c6db",
+    "#448aff",
+    "#a56bdf",
+    "#ff72c6",
+    "#ffffff",
+    "#5d3927",
+    "#222222"
+  ];
 
-const H =
-  canvas.height;
+  let currentColor = "#ff4057";
+  let currentTool = "brush";
+  let baseMode = "solid";
 
-
-const palette = [
-
-"#ff4057",
-"#ff812b",
-"#ffd52e",
-"#74d34c",
-"#35c6db",
-"#448aff",
-"#a56bdf",
-"#ff72c6",
-"#ffffff",
-"#5d3927",
-"#222222"
-
-];
-
-
-let currentColor =
-  "#ff4057";
-
-let currentTool =
-  "brush";
-
-let drawing =
-  false;
-
-let lastPoint =
-  null;
+  let drawing = false;
+  let lastPoint = null;
 
 
+  /* --------------------------
+     MANGO SHAPE
+  --------------------------- */
 
-/* --------------------------
-   MANGO SHAPE
---------------------------- */
+  function mangoPath(context) {
 
-function mangoPath(context) {
+    context.beginPath();
 
-  context.beginPath();
+    context.moveTo(370, 115);
 
-  context.moveTo(
-    370,
-    115
-  );
+    context.bezierCurveTo(
+      485, 95,
+      560, 185,
+      550, 315
+    );
 
-  context.bezierCurveTo(
-    485, 95,
-    560, 185,
-    550, 315
-  );
+    context.bezierCurveTo(
+      540, 455,
+      455, 540,
+      335, 530
+    );
 
-  context.bezierCurveTo(
-    540, 455,
-    455, 540,
-    335, 530
-  );
+    context.bezierCurveTo(
+      220, 520,
+      170, 420,
+      205, 305
+    );
 
-  context.bezierCurveTo(
-    220, 520,
-    170, 420,
-    205, 305
-  );
+    context.bezierCurveTo(
+      235, 205,
+      290, 135,
+      370, 115
+    );
 
-  context.bezierCurveTo(
-    235, 205,
-    290, 135,
-    370, 115
-  );
-
-  context.closePath();
-
-}
+    context.closePath();
+  }
 
 
+  function insideMango(x, y) {
 
-function insideMango(x,y) {
+    mangoPath(ctx);
 
-  mangoPath(ctx);
-
-  return ctx.isPointInPath(
-    x,
-    y
-  );
-
-}
+    return ctx.isPointInPath(x, y);
+  }
 
 
+  /* --------------------------
+     BACKGROUND
+  --------------------------- */
 
-/* --------------------------
-   BACKGROUND
---------------------------- */
+  function drawBackground() {
 
-function drawBackground() {
+    ctx.clearRect(0, 0, W, H);
 
-  ctx.clearRect(
-    0,
-    0,
-    W,
-    H
-  );
+    const sky =
+      ctx.createLinearGradient(
+        0, 0,
+        0, H
+      );
 
+    sky.addColorStop(
+      0,
+      "#bfeaff"
+    );
 
-  const sky =
-    ctx.createLinearGradient(
+    sky.addColorStop(
+      0.58,
+      "#fff6c8"
+    );
+
+    sky.addColorStop(
+      1,
+      "#dff2a4"
+    );
+
+    ctx.fillStyle = sky;
+
+    ctx.fillRect(
       0,
       0,
-      0,
+      W,
       H
     );
 
 
-  sky.addColorStop(
-    0,
-    "#bfeaff"
-  );
+    /* sun */
 
-  sky.addColorStop(
-    .58,
-    "#fff6c8"
-  );
+    ctx.beginPath();
 
-  sky.addColorStop(
-    1,
-    "#dff2a4"
-  );
+    ctx.arc(
+      95,
+      95,
+      45,
+      0,
+      Math.PI * 2
+    );
 
+    ctx.fillStyle =
+      "#ffe66b";
 
-  ctx.fillStyle =
-    sky;
-
-  ctx.fillRect(
-    0,
-    0,
-    W,
-    H
-  );
+    ctx.fill();
 
 
-  /* sun */
+    /* ground */
 
-  ctx.beginPath();
+    ctx.fillStyle =
+      "#7bc96f";
 
-  ctx.arc(
-    95,
-    95,
-    45,
-    0,
-    Math.PI * 2
-  );
-
-  ctx.fillStyle =
-    "#ffe66b";
-
-  ctx.fill();
+    ctx.fillRect(
+      0,
+      H - 85,
+      W,
+      85
+    );
 
 
-  /* ground */
+    /* palm tree */
 
-  ctx.fillStyle =
-    "#7bc96f";
+    ctx.strokeStyle =
+      "#8a552e";
 
-  ctx.fillRect(
-    0,
-    H - 85,
-    W,
-    85
-  );
+    ctx.lineWidth =
+      14;
 
+    ctx.beginPath();
 
-  /* palm tree */
+    ctx.moveTo(
+      660,
+      535
+    );
 
-  ctx.strokeStyle =
-    "#8a552e";
+    ctx.quadraticCurveTo(
+      645,
+      410,
+      670,
+      310
+    );
 
-  ctx.lineWidth =
-    14;
-
-  ctx.beginPath();
-
-  ctx.moveTo(
-    660,
-    535
-  );
-
-  ctx.quadraticCurveTo(
-    645,
-    410,
-    670,
-    310
-  );
-
-  ctx.stroke();
+    ctx.stroke();
 
 
-  ctx.fillStyle =
-    "#36a852";
+    ctx.fillStyle =
+      "#36a852";
 
 
-  for(
-    let i = 0;
-    i < 6;
-    i++
-  ){
+    for (let i = 0; i < 6; i++) {
 
-    const angle =
-      i * Math.PI / 3;
+      const angle =
+        i * Math.PI / 3;
+
+      ctx.beginPath();
+
+      ctx.ellipse(
+        670 + Math.cos(angle) * 42,
+        300 + Math.sin(angle) * 20,
+        52,
+        15,
+        angle,
+        0,
+        Math.PI * 2
+      );
+
+      ctx.fill();
+    }
+  }
+
+
+  /* --------------------------
+     BASE GRADIENT
+  --------------------------- */
+
+  function getBaseFill() {
+
+    /*
+       SOLID MODE
+    */
+
+    if (baseMode === "solid") {
+      return solidColor.value;
+    }
+
+
+    /*
+       USER GRADIENT
+    */
+
+    if (baseMode === "gradient") {
+
+      let gradient;
+
+      if (
+        gradientDirection.value
+        === "horizontal"
+      ) {
+
+        gradient =
+          ctx.createLinearGradient(
+            200,
+            300,
+            560,
+            300
+          );
+
+      }
+
+      else if (
+        gradientDirection.value
+        === "vertical"
+      ) {
+
+        gradient =
+          ctx.createLinearGradient(
+            370,
+            110,
+            370,
+            530
+          );
+
+      }
+
+      else {
+
+        gradient =
+          ctx.createLinearGradient(
+            220,
+            150,
+            520,
+            500
+          );
+
+      }
+
+
+      gradient.addColorStop(
+        0,
+        gradientColor1.value
+      );
+
+      gradient.addColorStop(
+        1,
+        gradientColor2.value
+      );
+
+
+      return gradient;
+    }
+
+
+    /*
+       TROPICAL MANGO
+    */
+
+    const tropical =
+      ctx.createLinearGradient(
+        220,
+        145,
+        530,
+        480
+      );
+
+
+    tropical.addColorStop(
+      0,
+      "#65a83e"
+    );
+
+    tropical.addColorStop(
+      0.25,
+      "#d8d83e"
+    );
+
+    tropical.addColorStop(
+      0.48,
+      "#ffd83d"
+    );
+
+    tropical.addColorStop(
+      0.72,
+      "#ff9d32"
+    );
+
+    tropical.addColorStop(
+      1,
+      "#e84b3c"
+    );
+
+
+    return tropical;
+  }
+
+
+  /* --------------------------
+     MANGO BASE
+  --------------------------- */
+
+  function drawMangoBase() {
+
+    mangoPath(ctx);
+
+    ctx.fillStyle =
+      getBaseFill();
+
+    ctx.fill();
+
+
+    /*
+       Light/shadow layer.
+       Gives the mango some depth.
+    */
+
+    const shading =
+      ctx.createLinearGradient(
+        220,
+        160,
+        520,
+        480
+      );
+
+
+    shading.addColorStop(
+      0,
+      "rgba(255,255,255,.42)"
+    );
+
+    shading.addColorStop(
+      0.48,
+      "rgba(255,255,255,.03)"
+    );
+
+    shading.addColorStop(
+      1,
+      "rgba(100,35,0,.14)"
+    );
+
+
+    ctx.fillStyle =
+      shading;
+
+    ctx.fill();
+
+
+    /*
+       Highlight
+    */
+
+    ctx.save();
+
+    mangoPath(ctx);
+
+    ctx.clip();
+
 
     ctx.beginPath();
 
     ctx.ellipse(
-      670 +
-      Math.cos(angle) * 42,
-
-      300 +
-      Math.sin(angle) * 20,
-
-      52,
-      15,
-
-      angle,
-
+      315,
+      245,
+      34,
+      105,
+      -0.35,
       0,
       Math.PI * 2
     );
 
+    ctx.fillStyle =
+      "rgba(255,255,255,.15)";
+
     ctx.fill();
 
+    ctx.restore();
+
+
+    /*
+       Leaf
+    */
+
+    ctx.beginPath();
+
+    ctx.ellipse(
+      390,
+      98,
+      55,
+      20,
+      -0.45,
+      0,
+      Math.PI * 2
+    );
+
+    ctx.fillStyle =
+      "#46a847";
+
+    ctx.fill();
+
+
+    redrawOutline();
   }
 
-}
+
+  function redrawOutline() {
+
+    mangoPath(ctx);
+
+    ctx.strokeStyle =
+      "rgba(80,65,30,.45)";
+
+    ctx.lineWidth =
+      4;
+
+    ctx.stroke();
+  }
 
 
+  /* --------------------------
+     RENDER
+  --------------------------- */
 
-/* --------------------------
-   MANGO BASE
---------------------------- */
+  function render() {
 
-function drawMangoBase() {
+    drawBackground();
 
-  mangoPath(ctx);
+    drawMangoBase();
 
-  ctx.fillStyle =
-    baseColor.value;
+    ctx.drawImage(
+      artCanvas,
+      0,
+      0
+    );
 
-  ctx.fill();
+    redrawOutline();
+  }
 
 
-  const gradient =
-    ctx.createLinearGradient(
-      220,
-      160,
-      520,
-      480
+  /* --------------------------
+     CLIPPING
+  --------------------------- */
+
+  function clipMango() {
+
+    art.save();
+
+    mangoPath(art);
+
+    art.clip();
+  }
+
+
+  function unclipMango() {
+
+    art.restore();
+  }
+
+
+  /* --------------------------
+     POINTER POSITION
+  --------------------------- */
+
+  function getPoint(e) {
+
+    const rect =
+      canvas.getBoundingClientRect();
+
+    const source =
+      e.touches
+        ? e.touches[0]
+        : e;
+
+    return {
+
+      x:
+        (source.clientX - rect.left)
+        *
+        (W / rect.width),
+
+      y:
+        (source.clientY - rect.top)
+        *
+        (H / rect.height)
+
+    };
+  }
+
+
+  function size() {
+
+    return Number(
+      sizeInput.value
+    );
+  }
+
+
+  /* --------------------------
+     COLOUR
+  --------------------------- */
+
+  function setColor(color) {
+
+    currentColor =
+      color;
+
+    colorPicker.value =
+      color;
+
+    document
+      .querySelectorAll(".swatch")
+      .forEach(el => {
+
+        el.classList.toggle(
+          "active",
+          el.dataset.color === color
+        );
+
+      });
+  }
+
+
+  /* --------------------------
+     TOOL
+  --------------------------- */
+
+  function setTool(tool) {
+
+    currentTool =
+      tool;
+
+    document
+      .querySelectorAll(".tool")
+      .forEach(el => {
+
+        el.classList.toggle(
+          "active",
+          el.dataset.tool === tool
+        );
+
+      });
+  }
+
+
+  /* --------------------------
+     BASE MODE
+  --------------------------- */
+
+  function setBaseMode(mode) {
+
+    baseMode = mode;
+
+    document
+      .querySelectorAll(".baseMode")
+      .forEach(button => {
+
+        button.classList.toggle(
+          "active",
+          button.dataset.mode === mode
+        );
+
+      });
+
+
+    solidControls.classList.toggle(
+      "hidden",
+      mode !== "solid"
     );
 
 
-  gradient.addColorStop(
-    0,
-    "rgba(255,255,255,.45)"
-  );
+    gradientControls.classList.toggle(
+      "hidden",
+      mode !== "gradient"
+    );
 
-  gradient.addColorStop(
-    .55,
-    "rgba(255,255,255,.03)"
-  );
 
-  gradient.addColorStop(
-    1,
-    "rgba(255,90,0,.18)"
-  );
+    tropicalInfo.classList.toggle(
+      "hidden",
+      mode !== "tropical"
+    );
 
 
-  ctx.fillStyle =
-    gradient;
+    render();
+  }
 
-  ctx.fill();
 
+  /* --------------------------
+     BRUSH
+  --------------------------- */
 
-  /* leaf */
+  function drawLine(a, b, erase) {
 
-  ctx.beginPath();
+    clipMango();
 
-  ctx.ellipse(
-    390,
-    98,
-    55,
-    20,
-    -.45,
-    0,
-    Math.PI * 2
-  );
 
-  ctx.fillStyle =
-    "#46a847";
+    art.globalCompositeOperation =
+      erase
+        ? "destination-out"
+        : "source-over";
 
-  ctx.fill();
 
+    art.strokeStyle =
+      currentColor;
 
-  redrawOutline();
+    art.lineWidth =
+      size();
 
-}
+    art.lineCap =
+      "round";
 
-
-
-function redrawOutline() {
-
-  mangoPath(ctx);
-
-  ctx.strokeStyle =
-    "rgba(80,65,30,.45)";
-
-  ctx.lineWidth =
-    4;
-
-  ctx.stroke();
-
-}
-
-
-
-/* --------------------------
-   RENDER
---------------------------- */
-
-function render() {
-
-  drawBackground();
-
-  drawMangoBase();
-
-  ctx.drawImage(
-    artCanvas,
-    0,
-    0
-  );
-
-  redrawOutline();
-
-}
-
-
-
-/* --------------------------
-   DRAWING CLIP
---------------------------- */
-
-function clipMango() {
-
-  art.save();
-
-  mangoPath(art);
-
-  art.clip();
-
-}
-
-
-function unclipMango() {
-
-  art.restore();
-
-}
-
-
-
-/* --------------------------
-   POINTER POSITION
---------------------------- */
-
-function getPoint(e) {
-
-  const rect =
-    canvas.getBoundingClientRect();
-
-
-  const source =
-    e.touches
-    ? e.touches[0]
-    : e;
-
-
-  return {
-
-    x:
-      (source.clientX -
-      rect.left)
-      *
-      (W /
-      rect.width),
-
-    y:
-      (source.clientY -
-      rect.top)
-      *
-      (H /
-      rect.height)
-
-  };
-
-}
-
-
-
-function size() {
-
-  return Number(
-    sizeInput.value
-  );
-
-}
-
-
-
-/* --------------------------
-   COLOUR + TOOL
---------------------------- */
-
-function setColor(color) {
-
-  currentColor =
-    color;
-
-  colorPicker.value =
-    color;
-
-
-  document
-    .querySelectorAll(
-      ".swatch"
-    )
-    .forEach(el => {
-
-      el.classList.toggle(
-        "active",
-        el.dataset.color
-        === color
-      );
-
-    });
-
-}
-
-
-
-function setTool(tool) {
-
-  currentTool =
-    tool;
-
-
-  document
-    .querySelectorAll(
-      ".tool"
-    )
-    .forEach(el => {
-
-      el.classList.toggle(
-        "active",
-        el.dataset.tool
-        === tool
-      );
-
-    });
-
-}
-
-
-
-/* --------------------------
-   BRUSH
---------------------------- */
-
-function drawLine(
-  a,
-  b,
-  erase
-) {
-
-  clipMango();
-
-
-  art.globalCompositeOperation =
-    erase
-    ? "destination-out"
-    : "source-over";
-
-
-  art.strokeStyle =
-    currentColor;
-
-  art.lineWidth =
-    size();
-
-  art.lineCap =
-    "round";
-
-  art.lineJoin =
-    "round";
-
-
-  art.beginPath();
-
-  art.moveTo(
-    a.x,
-    a.y
-  );
-
-  art.lineTo(
-    b.x,
-    b.y
-  );
-
-  art.stroke();
-
-
-  art.globalCompositeOperation =
-    "source-over";
-
-
-  unclipMango();
-
-  render();
-
-}
-
-
-
-/* --------------------------
-   DOT
---------------------------- */
-
-function drawDot(x,y) {
-
-  clipMango();
-
-  art.fillStyle =
-    currentColor;
-
-  art.beginPath();
-
-  art.arc(
-    x,
-    y,
-    size(),
-    0,
-    Math.PI * 2
-  );
-
-  art.fill();
-
-  unclipMango();
-
-  render();
-
-}
-
-
-
-/* --------------------------
-   STRIPE
---------------------------- */
-
-function drawStripe(y) {
-
-  clipMango();
-
-  art.strokeStyle =
-    currentColor;
-
-  art.lineWidth =
-    size() * 1.8;
-
-  art.beginPath();
-
-  art.moveTo(
-    160,
-    y
-  );
-
-  art.quadraticCurveTo(
-    370,
-    y - 15,
-    570,
-    y
-  );
-
-  art.stroke();
-
-  unclipMango();
-
-  render();
-
-}
-
-
-
-/* --------------------------
-   HEART
---------------------------- */
-
-function drawHeart(x,y) {
-
-  clipMango();
-
-  const s =
-    size() * 1.5;
-
-
-  art.save();
-
-  art.translate(
-    x,
-    y
-  );
-
-
-  art.beginPath();
-
-  art.moveTo(
-    0,
-    s
-  );
-
-
-  art.bezierCurveTo(
-    s * 1.2,
-    0,
-
-    s * .8,
-    -s,
-
-    0,
-    -s * .45
-  );
-
-
-  art.bezierCurveTo(
-    -s * .8,
-    -s,
-
-    -s * 1.2,
-    0,
-
-    0,
-    s
-  );
-
-
-  art.fillStyle =
-    currentColor;
-
-  art.fill();
-
-
-  art.restore();
-
-  unclipMango();
-
-  render();
-
-}
-
-
-
-/* --------------------------
-   FLOWER
---------------------------- */
-
-function drawFlower(x,y) {
-
-  clipMango();
-
-
-  const r =
-    size() * .7;
-
-
-  for(
-    let i = 0;
-    i < 6;
-    i++
-  ){
-
-    const a =
-      Math.PI * 2 *
-      i / 6;
+    art.lineJoin =
+      "round";
 
 
     art.beginPath();
 
+    art.moveTo(
+      a.x,
+      a.y
+    );
+
+    art.lineTo(
+      b.x,
+      b.y
+    );
+
+    art.stroke();
+
+
+    art.globalCompositeOperation =
+      "source-over";
+
+
+    unclipMango();
+
+    render();
+  }
+
+
+  /* --------------------------
+     DOTS
+  --------------------------- */
+
+  function drawDot(x, y) {
+
+    clipMango();
+
+    art.fillStyle =
+      currentColor;
+
+    art.beginPath();
 
     art.arc(
-
-      x +
-      Math.cos(a)
-      * r * 1.8,
-
-      y +
-      Math.sin(a)
-      * r * 1.8,
-
-      r,
-
+      x,
+      y,
+      size(),
       0,
       Math.PI * 2
+    );
 
+    art.fill();
+
+    unclipMango();
+
+    render();
+  }
+
+
+  /* --------------------------
+     STRIPE
+  --------------------------- */
+
+  function drawStripe(y) {
+
+    clipMango();
+
+    art.strokeStyle =
+      currentColor;
+
+    art.lineWidth =
+      size() * 1.8;
+
+    art.beginPath();
+
+    art.moveTo(
+      160,
+      y
+    );
+
+    art.quadraticCurveTo(
+      370,
+      y - 15,
+      570,
+      y
+    );
+
+    art.stroke();
+
+    unclipMango();
+
+    render();
+  }
+
+
+  /* --------------------------
+     HEART
+  --------------------------- */
+
+  function drawHeart(x, y) {
+
+    clipMango();
+
+    const s =
+      size() * 1.5;
+
+
+    art.save();
+
+    art.translate(
+      x,
+      y
+    );
+
+
+    art.beginPath();
+
+    art.moveTo(
+      0,
+      s
+    );
+
+
+    art.bezierCurveTo(
+      s * 1.2,
+      0,
+
+      s * .8,
+      -s,
+
+      0,
+      -s * .45
+    );
+
+
+    art.bezierCurveTo(
+      -s * .8,
+      -s,
+
+      -s * 1.2,
+      0,
+
+      0,
+      s
     );
 
 
@@ -1065,423 +1162,475 @@ function drawFlower(x,y) {
 
     art.fill();
 
+
+    art.restore();
+
+    unclipMango();
+
+    render();
   }
 
 
-  art.beginPath();
+  /* --------------------------
+     FLOWER
+  --------------------------- */
 
-  art.arc(
-    x,
-    y,
-    r,
-    0,
-    Math.PI * 2
-  );
+  function drawFlower(x, y) {
 
-  art.fillStyle =
-    "#ffd52e";
+    clipMango();
 
-  art.fill();
+    const r =
+      size() * .7;
 
 
-  unclipMango();
+    for (let i = 0; i < 6; i++) {
 
-  render();
+      const a =
+        Math.PI * 2 * i / 6;
 
-}
 
+      art.beginPath();
 
+      art.arc(
 
-/* --------------------------
-   START DRAWING
---------------------------- */
+        x +
+        Math.cos(a) *
+        r * 1.8,
 
-function startDrawing(p) {
+        y +
+        Math.sin(a) *
+        r * 1.8,
 
-  if(
-    !insideMango(
-      p.x,
-      p.y
-    )
-  )
-    return;
+        r,
 
+        0,
+        Math.PI * 2
 
-  drawing =
-    true;
-
-  lastPoint =
-    p;
-
-
-  if(
-    currentTool
-    === "brush"
-  )
-
-    drawLine(
-      p,
-      p,
-      false
-    );
-
-
-  else if(
-    currentTool
-    === "eraser"
-  )
-
-    drawLine(
-      p,
-      p,
-      true
-    );
-
-
-  else if(
-    currentTool
-    === "dots"
-  )
-
-    drawDot(
-      p.x,
-      p.y
-    );
-
-
-  else if(
-    currentTool
-    === "stripe"
-  )
-
-    drawStripe(
-      p.y
-    );
-
-
-  else if(
-    currentTool
-    === "heart"
-  )
-
-    drawHeart(
-      p.x,
-      p.y
-    );
-
-
-  else if(
-    currentTool
-    === "flower"
-  )
-
-    drawFlower(
-      p.x,
-      p.y
-    );
-
-}
-
-
-
-/* --------------------------
-   MOVE DRAWING
---------------------------- */
-
-function moveDrawing(p) {
-
-  if(
-    !drawing
-  )
-    return;
-
-
-  if(
-    currentTool
-    === "brush"
-  )
-
-    drawLine(
-      lastPoint,
-      p,
-      false
-    );
-
-
-  else if(
-    currentTool
-    === "eraser"
-  )
-
-    drawLine(
-      lastPoint,
-      p,
-      true
-    );
-
-
-  else if(
-    currentTool
-    === "dots"
-    &&
-    insideMango(
-      p.x,
-      p.y
-    )
-  )
-
-    drawDot(
-      p.x,
-      p.y
-    );
-
-
-  lastPoint =
-    p;
-
-}
-
-
-
-function endDrawing() {
-
-  drawing =
-    false;
-
-  lastPoint =
-    null;
-
-}
-
-
-
-/* --------------------------
-   CLEAR
---------------------------- */
-
-function clearArt() {
-
-  art.clearRect(
-    0,
-    0,
-    W,
-    H
-  );
-
-  render();
-
-}
-
-
-
-/* --------------------------
-   FILL
---------------------------- */
-
-function fillMango() {
-
-  clipMango();
-
-  art.fillStyle =
-    currentColor;
-
-  mangoPath(art);
-
-  art.fill();
-
-  unclipMango();
-
-  render();
-
-}
-
-
-
-/* --------------------------
-   RANDOM DESIGN
---------------------------- */
-
-function randomFrom(arr) {
-
-  return arr[
-    Math.floor(
-      Math.random()
-      *
-      arr.length
-    )
-  ];
-
-}
-
-
-
-function surpriseMe() {
-
-  clearArt();
-
-
-  baseColor.value =
-    randomFrom([
-      "#ffc928",
-      "#ff9c2a",
-      "#ffcf4d",
-      "#f5b82e",
-      "#ff7c35"
-    ]);
-
-
-  render();
-
-
-  for(
-    let i = 0;
-    i < 4;
-    i++
-  ){
-
-    currentColor =
-      randomFrom(
-        palette.slice(
-          0,
-          8
-        )
       );
 
 
-    sizeInput.value =
-      8 +
-      Math.floor(
-        Math.random()
-        * 8
-      );
+      art.fillStyle =
+        currentColor;
+
+      art.fill();
+    }
 
 
-    drawStripe(
-      230 +
-      i * 60
+    art.beginPath();
+
+    art.arc(
+      x,
+      y,
+      r,
+      0,
+      Math.PI * 2
     );
 
+    art.fillStyle =
+      "#ffd52e";
+
+    art.fill();
+
+
+    unclipMango();
+
+    render();
   }
 
 
-  for(
-    let i = 0;
-    i < 12;
-    i++
-  ){
+  /* --------------------------
+     START DRAWING
+  --------------------------- */
 
-    currentColor =
-      randomFrom(
-        palette.slice(
-          0,
-          8
-        )
+  function startDrawing(p) {
+
+    if (
+      !insideMango(
+        p.x,
+        p.y
+      )
+    ) {
+      return;
+    }
+
+
+    drawing = true;
+
+    lastPoint = p;
+
+
+    if (
+      currentTool === "brush"
+    ) {
+
+      drawLine(
+        p,
+        p,
+        false
       );
-
-
-    const x =
-      275 +
-      Math.random()
-      * 190;
-
-
-    const y =
-      190 +
-      Math.random()
-      * 280;
-
-
-    if(
-      insideMango(
-        x,
-        y
-      )
-    ){
-
-      if(
-        Math.random()
-        > .5
-      )
-
-        drawHeart(
-          x,
-          y
-        );
-
-      else
-
-        drawFlower(
-          x,
-          y
-        );
 
     }
 
+    else if (
+      currentTool === "eraser"
+    ) {
+
+      drawLine(
+        p,
+        p,
+        true
+      );
+
+    }
+
+    else if (
+      currentTool === "dots"
+    ) {
+
+      drawDot(
+        p.x,
+        p.y
+      );
+
+    }
+
+    else if (
+      currentTool === "stripe"
+    ) {
+
+      drawStripe(
+        p.y
+      );
+
+    }
+
+    else if (
+      currentTool === "heart"
+    ) {
+
+      drawHeart(
+        p.x,
+        p.y
+      );
+
+    }
+
+    else if (
+      currentTool === "flower"
+    ) {
+
+      drawFlower(
+        p.x,
+        p.y
+      );
+
+    }
   }
 
 
-  sizeLabel.textContent =
-    sizeInput.value;
+  /* --------------------------
+     MOVE
+  --------------------------- */
 
-}
+  function moveDrawing(p) {
 
-
-
-/* --------------------------
-   DOWNLOAD
---------------------------- */
-
-function downloadPNG() {
-
-  render();
+    if (!drawing) {
+      return;
+    }
 
 
-  const link =
-    document.createElement(
-      "a"
+    if (
+      currentTool === "brush"
+    ) {
+
+      drawLine(
+        lastPoint,
+        p,
+        false
+      );
+
+    }
+
+    else if (
+      currentTool === "eraser"
+    ) {
+
+      drawLine(
+        lastPoint,
+        p,
+        true
+      );
+
+    }
+
+    else if (
+      currentTool === "dots"
+      &&
+      insideMango(
+        p.x,
+        p.y
+      )
+    ) {
+
+      drawDot(
+        p.x,
+        p.y
+      );
+
+    }
+
+
+    lastPoint = p;
+  }
+
+
+  function endDrawing() {
+
+    drawing = false;
+
+    lastPoint = null;
+  }
+
+
+  /* --------------------------
+     CLEAR
+  --------------------------- */
+
+  function clearArt() {
+
+    art.clearRect(
+      0,
+      0,
+      W,
+      H
     );
 
+    render();
+  }
 
-  link.download =
-    "my-mango.png";
+
+  /* --------------------------
+     FILL MANGO
+  --------------------------- */
+
+  function fillMango() {
+
+    clipMango();
+
+    art.fillStyle =
+      currentColor;
+
+    mangoPath(art);
+
+    art.fill();
+
+    unclipMango();
+
+    render();
+  }
 
 
-  link.href =
-    canvas.toDataURL(
-      "image/png"
+  /* --------------------------
+     RANDOM
+  --------------------------- */
+
+  function randomFrom(arr) {
+
+    return arr[
+      Math.floor(
+        Math.random()
+        *
+        arr.length
+      )
+    ];
+  }
+
+
+  function surpriseMe() {
+
+    clearArt();
+
+
+    /*
+       Randomly choose either
+       gradient or tropical.
+    */
+
+    if (
+      Math.random() > 0.5
+    ) {
+
+      gradientColor1.value =
+        randomFrom([
+          "#f5e442",
+          "#8dc63f",
+          "#ffc928",
+          "#ff9c2a"
+        ]);
+
+
+      gradientColor2.value =
+        randomFrom([
+          "#ef493d",
+          "#ff7b32",
+          "#ffb52e",
+          "#f45a67"
+        ]);
+
+
+      setBaseMode(
+        "gradient"
+      );
+
+    }
+
+    else {
+
+      setBaseMode(
+        "tropical"
+      );
+
+    }
+
+
+    for (
+      let i = 0;
+      i < 4;
+      i++
+    ) {
+
+      currentColor =
+        randomFrom(
+          palette.slice(
+            0,
+            8
+          )
+        );
+
+
+      sizeInput.value =
+        8 +
+        Math.floor(
+          Math.random()
+          * 8
+        );
+
+
+      drawStripe(
+        230 +
+        i * 60
+      );
+    }
+
+
+    for (
+      let i = 0;
+      i < 12;
+      i++
+    ) {
+
+      currentColor =
+        randomFrom(
+          palette.slice(
+            0,
+            8
+          )
+        );
+
+
+      const x =
+        275 +
+        Math.random()
+        * 190;
+
+
+      const y =
+        190 +
+        Math.random()
+        * 280;
+
+
+      if (
+        insideMango(
+          x,
+          y
+        )
+      ) {
+
+        if (
+          Math.random() > .5
+        ) {
+
+          drawHeart(
+            x,
+            y
+          );
+
+        }
+
+        else {
+
+          drawFlower(
+            x,
+            y
+          );
+
+        }
+      }
+    }
+
+
+    sizeLabel.textContent =
+      sizeInput.value;
+
+    setColor(
+      colorPicker.value
     );
+  }
 
 
-  link.click();
+  /* --------------------------
+     DOWNLOAD
+  --------------------------- */
 
-}
+  function downloadPNG() {
+
+    render();
+
+    const link =
+      document.createElement("a");
+
+    link.download =
+      "my-mango.png";
+
+    link.href =
+      canvas.toDataURL(
+        "image/png"
+      );
+
+    link.click();
+  }
 
 
+  /* --------------------------
+     BUILD PALETTE
+  --------------------------- */
 
-/* --------------------------
-   PALETTE
---------------------------- */
-
-palette.forEach(
-  color => {
+  palette.forEach(color => {
 
     const button =
       document.createElement(
         "button"
       );
 
-
     button.type =
       "button";
-
 
     button.className =
       "swatch";
 
-
     button.dataset.color =
       color;
-
 
     button.style.background =
       color;
@@ -1489,7 +1638,7 @@ palette.forEach(
 
     button.addEventListener(
       "click",
-      function(){
+      function () {
 
         setColor(
           color
@@ -1502,188 +1651,208 @@ palette.forEach(
     paletteEl.appendChild(
       button
     );
-
-  }
-);
+  });
 
 
+  /* --------------------------
+     TOOL BUTTONS
+  --------------------------- */
 
-/* --------------------------
-   TOOL BUTTONS
---------------------------- */
+  document
+    .querySelectorAll(".tool")
+    .forEach(button => {
 
-document
-.querySelectorAll(
-  ".tool"
-)
-.forEach(
-  button => {
+      button.addEventListener(
+        "click",
+        function () {
 
-    button.addEventListener(
+          setTool(
+            button.dataset.tool
+          );
+
+        }
+      );
+
+    });
+
+
+  /* --------------------------
+     BASE BUTTONS
+  --------------------------- */
+
+  document
+    .querySelectorAll(".baseMode")
+    .forEach(button => {
+
+      button.addEventListener(
+        "click",
+        function () {
+
+          setBaseMode(
+            button.dataset.mode
+          );
+
+        }
+      );
+
+    });
+
+
+  /* --------------------------
+     CONTROLS
+  --------------------------- */
+
+  sizeInput.addEventListener(
+    "input",
+    function () {
+
+      sizeLabel.textContent =
+        sizeInput.value;
+
+    }
+  );
+
+
+  colorPicker.addEventListener(
+    "input",
+    function (e) {
+
+      setColor(
+        e.target.value
+      );
+
+    }
+  );
+
+
+  solidColor.addEventListener(
+    "input",
+    render
+  );
+
+
+  gradientColor1.addEventListener(
+    "input",
+    render
+  );
+
+
+  gradientColor2.addEventListener(
+    "input",
+    render
+  );
+
+
+  gradientDirection.addEventListener(
+    "change",
+    render
+  );
+
+
+  document
+    .getElementById("clearArt")
+    .addEventListener(
       "click",
-      function(){
-
-        setTool(
-          button.dataset.tool
-        );
-
-      }
+      clearArt
     );
 
-  }
-);
 
-
-
-sizeInput.addEventListener(
-  "input",
-  function(){
-
-    sizeLabel.textContent =
-      sizeInput.value;
-
-  }
-);
-
-
-
-colorPicker.addEventListener(
-  "input",
-  function(e){
-
-    setColor(
-      e.target.value
+  document
+    .getElementById("fillMango")
+    .addEventListener(
+      "click",
+      fillMango
     );
 
-  }
-);
 
-
-
-baseColor.addEventListener(
-  "input",
-  render
-);
-
-
-
-document
-.getElementById(
-  "clearArt"
-)
-.addEventListener(
-  "click",
-  clearArt
-);
-
-
-
-document
-.getElementById(
-  "fillMango"
-)
-.addEventListener(
-  "click",
-  fillMango
-);
-
-
-
-document
-.getElementById(
-  "surprise"
-)
-.addEventListener(
-  "click",
-  surpriseMe
-);
-
-
-
-document
-.getElementById(
-  "download"
-)
-.addEventListener(
-  "click",
-  downloadPNG
-);
-
-
-
-/* --------------------------
-   POINTER EVENTS
---------------------------- */
-
-canvas.addEventListener(
-  "pointerdown",
-  function(e){
-
-    startDrawing(
-      getPoint(e)
+  document
+    .getElementById("surprise")
+    .addEventListener(
+      "click",
+      surpriseMe
     );
 
-    e.preventDefault();
 
-  }
-);
-
-
-canvas.addEventListener(
-  "pointermove",
-  function(e){
-
-    moveDrawing(
-      getPoint(e)
+  document
+    .getElementById("download")
+    .addEventListener(
+      "click",
+      downloadPNG
     );
 
-    e.preventDefault();
 
-  }
-);
+  /* --------------------------
+     POINTER EVENTS
+  --------------------------- */
 
+  canvas.addEventListener(
+    "pointerdown",
+    function (e) {
 
-canvas.addEventListener(
-  "pointerup",
-  function(e){
+      startDrawing(
+        getPoint(e)
+      );
 
-    endDrawing();
-
-    e.preventDefault();
-
-  }
-);
-
-
-canvas.addEventListener(
-  "pointercancel",
-  endDrawing
-);
+      e.preventDefault();
+    }
+  );
 
 
-window.addEventListener(
-  "pointerup",
-  endDrawing
-);
+  canvas.addEventListener(
+    "pointermove",
+    function (e) {
+
+      moveDrawing(
+        getPoint(e)
+      );
+
+      e.preventDefault();
+    }
+  );
 
 
+  canvas.addEventListener(
+    "pointerup",
+    function (e) {
 
-/* --------------------------
-   INITIALIZE
---------------------------- */
+      endDrawing();
 
-setColor(
-  currentColor
-);
+      e.preventDefault();
+    }
+  );
 
-setTool(
-  currentTool
-);
 
-render();
+  canvas.addEventListener(
+    "pointercancel",
+    endDrawing
+  );
+
+
+  window.addEventListener(
+    "pointerup",
+    endDrawing
+  );
+
+
+  /* --------------------------
+     INITIALIZE
+  --------------------------- */
+
+  setColor(
+    currentColor
+  );
+
+  setTool(
+    currentTool
+  );
+
+  setBaseMode(
+    "solid"
+  );
+
+  render();
 
 })();
-
 </script>
 
 </body>
